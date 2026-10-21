@@ -1,0 +1,10 @@
+streamlit
+fastapi
+uvicorn[standard]
+duckdb
+polars
+plotly
+python-multipart
+pytest
+httpx
+pyarrow
