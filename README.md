@@ -1,71 +1,177 @@
 # 📊 AI Data Analytics Agent
 
-**An interactive data analytics platform built with Python, Streamlit, FastAPI, Polars, DuckDB, and Plotly.**
+**An AI-assisted data analytics platform built with Python, Streamlit, FastAPI, Polars, DuckDB, Plotly, and MLflow.**
 
-Upload a CSV dataset, explore its structure, identify data-quality issues, run SQL queries, ask natural-language questions, and generate downloadable analysis reports.
+Upload CSV datasets, explore data quality, run SQL queries, ask natural-language questions, generate downloadable reports, and track analysis experiments with MLflow.
 
-[![Python](https://img.shields.io/badge/Python-3.12+-blue?logo=python&logoColor=white)](https://www.python.org/)
-[![FastAPI](https://img.shields.io/badge/API-FastAPI-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
-[![Streamlit](https://img.shields.io/badge/UI-Streamlit-FF4B4B?logo=streamlit&logoColor=white)](https://streamlit.io/)
-[![Docker](https://img.shields.io/badge/Container-Docker-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
-[![AI Data Analytics Agent CI](https://github.com/Nagulanvelu/ai-data-analytics-agent/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Nagulanvelu/ai-data-analytics-agent/actions/workflows/ci.yml)
+<p align="center">
+  <a href="https://www.python.org/"><img src="https://img.shields.io/badge/Python-3.12+-3776AB?logo=python&logoColor=white" alt="Python"></a>
+  <a href="https://streamlit.io/"><img src="https://img.shields.io/badge/Streamlit-Dashboard-FF4B4B?logo=streamlit&logoColor=white" alt="Streamlit"></a>
+  <a href="https://fastapi.tiangolo.com/"><img src="https://img.shields.io/badge/FastAPI-REST_API-009688?logo=fastapi&logoColor=white" alt="FastAPI"></a>
+  <a href="https://mlflow.org/"><img src="https://img.shields.io/badge/MLflow-Experiment_Tracking-0194E2?logo=mlflow&logoColor=white" alt="MLflow"></a>
+  <a href="https://github.com/Nagulanvelu/ai-data-analytics-agent/actions/workflows/ci.yml"><img src="https://github.com/Nagulanvelu/ai-data-analytics-agent/actions/workflows/ci.yml/badge.svg?branch=main" alt="GitHub Actions CI"></a>
+  <a href="https://www.docker.com/"><img src="https://img.shields.io/badge/Docker-Supported-2496ED?logo=docker&logoColor=white" alt="Docker"></a>
+</p>
 
+## 📌 Table of Contents
+
+- [Overview](#-overview)
+- [Features](#-features)
+- [Technology Stack](#-technology-stack)
+- [Architecture](#-architecture)
+- [Project Structure](#-project-structure)
+- [Getting Started](#-getting-started)
+- [Environment Configuration](#-environment-configuration)
+- [Run the Application](#-run-the-application)
+- [MLflow Experiment Tracking](#-mlflow-experiment-tracking)
+- [REST API](#-rest-api)
+- [Testing and CI](#-testing-and-ci)
+- [Docker](#-docker)
+- [Future Improvements](#-future-improvements)
+- [Author](#-author)
+
+## 🎯 Overview
+
+AI Data Analytics Agent brings essential exploratory data analysis and data-quality workflows into one interactive application.
+
+It combines CSV profiling, data-quality checks, SQL analytics, interactive visualizations, AI-assisted question answering, downloadable reports, and MLflow experiment tracking.
+
+The goal is to make dataset exploration easier while providing reproducible records of data-quality analysis.
 
 ## ✨ Features
 
-- **CSV Data Profiling** — Explore dataset dimensions, column names, data types, and descriptive statistics.
-- **Data Quality Analysis** — Identify missing values and duplicate rows.
-- **Interactive Visualizations** — Explore distributions and missing-value patterns using Plotly.
-- **SQL Analytics** — Query uploaded datasets using DuckDB.
-- **Analytics Agent** — Route natural-language questions to suitable analytics functions.
-- **REST API** — Analyze uploaded CSV files using FastAPI endpoints.
-- **Automated Reports** — Generate downloadable text reports with dataset summaries and data-quality findings.
-- **Automated Testing** — Validate core functionality using pytest.
-- **Docker Support** — Run the dashboard and API in a container.
+### 📂 CSV Data Profiling
+- Upload CSV files through an interactive Streamlit dashboard.
+- Explore dataset dimensions, columns, and data types.
+- Preview records and inspect descriptive statistics.
+- Process tabular data with Polars.
 
-## 🛠️ Tech Stack
+### 🧹 Data Quality Analysis
+- Identify missing values by column.
+- Detect duplicate records.
+- Inspect blank values in supported text columns.
+- Visualize missing-value patterns.
+- Generate downloadable data-quality reports.
+- Calculate a project-defined data-quality score.
+
+### 📊 Interactive Visualizations
+- Explore numeric distributions with Plotly.
+- Visualize missing-value information.
+- Review analytical results directly in the dashboard.
+
+### 🗃️ SQL Analytics
+- Query uploaded CSV data using DuckDB.
+- Preview query results.
+- Download query results as CSV.
+
+Example query:
+
+```sql
+SELECT * FROM data LIMIT 10;
+```
+
+### 🤖 AI-Assisted Analytics Agent
+- Ask natural-language questions about your dataset.
+- Route supported questions to analytics tools.
+- Use the configured Groq-powered workflow when available.
+- Display the selected tool and analysis results.
+
+The questions supported depend on the analytics tools and configuration in the application.
+
+### 📝 Automated Reports
+- Generate text-based data-quality reports.
+- Include dataset dimensions and quality findings.
+- Summarize missing values, duplicate rows, and numerical statistics.
+- Download reports for further review.
+
+### 📈 MLflow Experiment Tracking
+- Track dataset-analysis runs with MLflow.
+- Record dataset dimensions and column counts.
+- Log missing-value and duplicate-row metrics.
+- Track missing and duplicate percentages.
+- Log the project-defined data-quality score.
+- Save generated reports as MLflow artifacts.
+- Return an experiment run ID for inspection.
+
+### 📊 Experiment Comparison
+- Retrieve historical MLflow experiment runs.
+- Compare logged data-quality metrics.
+- Review quality-score changes across analysis runs using the dashboard's comparison functionality.
+
+### ⚡ REST API
+- Provide CSV-analysis functionality through FastAPI.
+- Generate analysis reports through API endpoints.
+- Expose interactive API documentation through Swagger UI.
+
+### 🧪 Automated Testing and CI
+- Test application components using pytest.
+- Measure test coverage using pytest-cov.
+- Run automated tests through GitHub Actions for configured pushes and pull requests.
+
+### 🐳 Docker Support
+- Build a container image using the included Dockerfile.
+- Configure application ports for dashboard and API access according to the container setup.
+
+## 🛠️ Technology Stack
 
 | Technology | Purpose |
 |---|---|
 | Python | Application logic |
-| Streamlit | Interactive dashboard |
+| Streamlit | Interactive analytics dashboard |
 | FastAPI | REST API |
-| Polars | Data processing |
+| Polars | Data processing and profiling |
 | DuckDB | SQL analytics |
-| Plotly | Interactive charts |
+| Plotly | Interactive visualizations |
+| LangGraph | Analytics-agent workflow |
+| Groq | Configured LLM-powered question answering |
+| MLflow | Experiment tracking and artifact logging |
 | Pytest | Automated testing |
+| pytest-cov | Test coverage |
+| GitHub Actions | Continuous integration |
 | Docker | Containerization |
 
 ## 🏗️ Architecture
 
 ```text
-                 ┌──────────────────────┐
-                 │       User           │
-                 └──────────┬───────────┘
-                            │
-                 ┌──────────▼───────────┐
-                 │  Streamlit Dashboard │
-                 └──────────┬───────────┘
-                            │
-                 ┌──────────▼───────────┐
-                 │  Analytics Agent     │
-                 │  Question Routing    │
-                 └──────────┬───────────┘
-                            │
-              ┌─────────────┼─────────────┐
-              │             │             │
-        ┌─────▼────┐  ┌─────▼────┐  ┌─────▼────┐
-        │ Polars   │  │ DuckDB   │  │ Plotly   │
-        │ Profiling│  │ SQL      │  │ Charts   │
-        └──────────┘  └──────────┘  └──────────┘
+                     ┌──────────────────────┐
+                     │        User          │
+                     └──────────┬───────────┘
+                                │
+                     ┌──────────▼───────────┐
+                     │ Streamlit Dashboard  │
+                     └──────────┬───────────┘
+                                │
+              ┌─────────────────┼─────────────────┐
+              │                 │                 │
+     ┌────────▼────────┐ ┌──────▼──────┐ ┌────────▼────────┐
+     │ Polars Profiling│ │ DuckDB SQL  │ │ Plotly Charts   │
+     └────────┬────────┘ └─────────────┘ └─────────────────┘
+              │
+     ┌────────▼─────────┐
+     │ Analytics Agent  │
+     │ Question Routing │
+     └────────┬─────────┘
+              │
+     ┌────────▼─────────┐
+     │ Analysis Results │
+     └────────┬─────────┘
+              │
+       ┌──────┴───────────────┐
+       │                      │
+┌──────▼─────────┐   ┌────────▼────────┐
+│ Report Generator│   │ MLflow Tracker  │
+└──────┬─────────┘   └────────┬────────┘
+       │                      │
+       ▼                      ▼
+ Downloadable Report    Metrics and Artifacts
 
-                 ┌──────────────────────┐
-                 │   FastAPI REST API   │
-                 └──────────┬───────────┘
-                            │
-                 ┌──────────▼───────────┐
-                 │ Report Generation    │
-                 └──────────────────────┘
+           FastAPI REST API
+         Health / Analysis / Report
+
+           GitHub Actions CI
+                   │
+                   ▼
+             Pytest Suite
 ```
 
 ## 📁 Project Structure
@@ -78,7 +184,9 @@ ai-data-analytics-agent/
 ├── analytics/
 │   ├── profiling.py
 │   ├── queries.py
-│   └── charts.py
+│   ├── charts.py
+│   ├── mlflow_tracker.py
+│   └── mlflow_dashboard.py
 ├── api/
 │   └── main.py
 ├── app/
@@ -87,7 +195,11 @@ ai-data-analytics-agent/
 ├── reports/
 │   └── report_generator.py
 ├── tests/
-│   └── test_agent.py
+│   ├── test_agent.py
+│   └── test_mlflow_tracker.py
+├── .github/
+│   └── workflows/
+│       └── ci.yml
 ├── .dockerignore
 ├── .gitignore
 ├── Dockerfile
@@ -95,13 +207,16 @@ ai-data-analytics-agent/
 └── README.md
 ```
 
+*This structure shows the main project files; additional test files and modules may exist in the repository.*
+
 ## 🚀 Getting Started
 
 ### Prerequisites
 
-- Python 3.12 or compatible version
-- Git
-- Docker Desktop (optional)
+- Python 3.12 or another version compatible with the project's dependencies.
+- Git.
+- A Groq API key if you want to use the configured Groq-powered functionality.
+- Docker Desktop (optional).
 
 ### 1. Clone the repository
 
@@ -112,7 +227,7 @@ cd ai-data-analytics-agent
 
 ### 2. Create a virtual environment
 
-**Windows PowerShell:**
+Windows PowerShell:
 
 ```powershell
 python -m venv .venv
@@ -121,110 +236,167 @@ python -m venv .venv
 
 ### 3. Install dependencies
 
-```bash
+```powershell
+python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 ```
 
-### 4. Start the Streamlit dashboard
+## 🔐 Environment Configuration
 
-```bash
+If the Groq-powered agent requires API authentication, configure your key using the environment-variable name expected by your application.
+
+For example, if the code reads `GROQ_API_KEY`, add the following to your local `.env` file:
+
+```text
+GROQ_API_KEY=your_groq_api_key
+```
+
+Never commit API keys, credentials, or your local `.env` file to GitHub.
+
+## ▶️ Run the Application
+
+### Start the Streamlit dashboard
+
+From the project root:
+
+```powershell
 python -m streamlit run app/streamlit_app.py
 ```
 
-Open `http://localhost:8501` in your browser.
+Open [http://localhost:8501](http://localhost:8501).
 
-### 5. Start the FastAPI backend
+### Start the FastAPI backend
 
 Open a second terminal, activate the virtual environment, and run:
 
-```bash
+```powershell
 python -m uvicorn api.main:app --reload --port 8000
 ```
 
 Useful endpoints:
 
-- Dashboard: `http://localhost:8501`
-- API documentation: `http://localhost:8000/docs`
-- Health check: `http://localhost:8000/health`
+- Dashboard: [http://localhost:8501](http://localhost:8501)
+- API documentation: [http://localhost:8000/docs](http://localhost:8000/docs)
+- Health check: [http://localhost:8000/health](http://localhost:8000/health)
 
-## 🔎 API Usage
+## 📈 MLflow Experiment Tracking
 
-### Analyze a CSV dataset
+The project uses the MLflow experiment named **AI Data Analytics Agent** to track dataset-quality analysis.
 
-Endpoint:
+### Start MLflow
 
-```http
-POST /analyze
+Run the following command from the project root in a separate terminal:
+
+```powershell
+python -m mlflow ui --host 127.0.0.1 --port 5000
 ```
 
-Example question:
+Open [http://127.0.0.1:5000](http://127.0.0.1:5000).
 
-```text
-Which columns have missing values?
-```
+### Track a dataset analysis
 
-The API returns the filename, dataset dimensions, selected analytics tool, and results in JSON format.
+1. Start the Streamlit dashboard.
+2. Upload a CSV dataset.
+3. Review the profiling and data-quality results.
+4. Use the MLflow tracking control in the dashboard.
+5. Open the MLflow UI to inspect the recorded run and artifacts.
 
-### Generate an analysis report
+### Tracked metrics
 
-Endpoint:
+| Metric | Description |
+|---|---|
+| `missing_values` | Count of missing or blank values |
+| `missing_percentage` | Missing values as a percentage of dataset cells |
+| `duplicate_rows` | Number of duplicate rows |
+| `duplicate_percentage` | Duplicate rows as a percentage of dataset rows |
+| `data_quality_score` | Project-defined data-quality heuristic |
 
-```http
-POST /report
-```
+Run parameters also record dataset dimensions and numeric/categorical column counts. The generated text report is saved as an MLflow artifact.
 
-Upload a CSV file to generate a downloadable text report containing dataset information, duplicate counts, missing-value counts, and numeric summaries.
+**Note:** The data-quality score is a project-defined heuristic for comparing runs. It is not a standardized data-quality certification.
 
-Use the interactive API documentation at `/docs` to test both endpoints.
+MLflow stores tracking information and artifacts in its configured tracking location. Keep local tracking databases, generated reports, and artifact directories out of Git unless they are intentionally required by the project.
 
-## 🧪 Run Tests
+## 🔎 REST API
 
-```bash
+The FastAPI application includes endpoints for health checks, CSV analysis, and report generation.
+
+| Method | Endpoint | Purpose |
+|---|---|---|
+| `GET` | `/health` | Check API health |
+| `POST` | `/analyze` | Analyze an uploaded CSV |
+| `POST` | `/report` | Generate a data-quality report |
+
+Use [Swagger UI](http://localhost:8000/docs) to inspect the API's actual request fields, response formats, and available operations.
+
+## 🧪 Testing and Continuous Integration
+
+Run the test suite locally:
+
+```powershell
 python -m pytest tests/ -v
 ```
 
-The initial test suite validates dataset overview, missing-value analysis, and report generation.
+Run tests with coverage:
+
+```powershell
+python -m pytest tests/ --cov=agent --cov=analytics --cov=api --cov=reports --cov-report=term-missing
+```
+
+The GitHub Actions workflow is located at `.github/workflows/ci.yml`.
+
+It is configured to run automated tests on pushes and pull requests targeting `main`.
+
+Check the [GitHub Actions page](https://github.com/Nagulanvelu/ai-data-analytics-agent/actions) for the actual workflow status and logs.
 
 ## 🐳 Run with Docker
 
-Make sure Docker Desktop is running.
+Ensure Docker Desktop is running.
 
-Build the image:
+### Build the image
 
-```bash
+```powershell
 docker build -t ai-data-analytics-agent .
 ```
 
-Run the container:
+### Run the container
 
-```bash
+```powershell
 docker run --name analytics-agent -p 8000:8000 -p 8501:8501 ai-data-analytics-agent
 ```
 
-Access the dashboard at `http://localhost:8501` and the API documentation at `http://localhost:8000/docs`.
+If the Dockerfile starts both services, access:
+
+- Dashboard: [http://localhost:8501](http://localhost:8501)
+- API documentation: [http://localhost:8000/docs](http://localhost:8000/docs)
+
+If either service is unavailable, inspect the Dockerfile and container logs to confirm which processes are started.
 
 ## 💡 Example Use Cases
 
 - Explore unfamiliar CSV datasets.
 - Detect missing values and duplicate records.
 - Generate descriptive statistics.
-- Run SQL queries on uploaded data.
-- Visualize numeric distributions.
+- Query datasets with SQL.
+- Visualize numerical distributions.
+- Ask supported natural-language questions about data.
 - Export data-quality reports.
-- Integrate analytics into other applications through a REST API.
+- Compare data-quality metrics across MLflow runs.
+- Integrate analytics into other applications through the REST API.
 
 ## 🔭 Future Improvements
 
-- Integrate an LLM for more flexible question answering.
-- Add safer SQL validation and query resource limits.
-- Introduce more advanced charts and automated insights.
-- Add downloadable PDF and HTML reports.
-- Implement GitHub Actions for continuous integration.
-- Expand test coverage and API validation.
+- Add anomaly detection and more advanced automated insights.
+- Introduce additional data-quality rules and configurable scoring.
+- Support downloadable PDF and HTML reports.
+- Strengthen SQL validation and resource limits.
+- Expand integration and end-to-end test coverage.
+- Add a hosted demo, screenshots, and a project walkthrough.
+- Explore model evaluation and model-performance tracking with MLflow.
 
 ## 👨‍💻 Author
 
-**Nagulanvelu**
+**Nagulan V**
 
 B.Tech Artificial Intelligence Student | Python | Data Science | AI/ML
 
@@ -233,4 +405,4 @@ B.Tech Artificial Intelligence Student | Python | Data Science | AI/ML
 
 ---
 
-*Built as a hands-on project to explore data analytics, API development, visualization, and deployment.*
+*Built as a hands-on project exploring data analytics, AI-assisted workflows, experiment tracking, API development, testing, and deployment.*
