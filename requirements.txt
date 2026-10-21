@@ -9,3 +9,7 @@ pytest
 httpx
 pyarrow
 pytest-cov
+langgraph
+langchain-core
+langchain-groq
+python-dotenv

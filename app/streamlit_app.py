@@ -9,6 +9,7 @@ from analytics.profiling import profile_csv
 from analytics.queries import run_sql_query
 from agent.graph import answer_question
 from analytics.charts import create_missing_values_chart
+from agent.graph import answer_question_with_groq
 
 st.set_page_config(
     page_title="AI Data Analytics Agent",
@@ -120,6 +121,12 @@ if uploaded_file is not None:
                     response = answer_question(df, user_question)
 
                     st.write(f"**Selected tool:** {response['tool']}")
+                    st.caption(
+                        response.get(
+                            "explanation",
+                            "Analysis tool selected successfully.",
+                        )
+                  ) 
 
                     result = response["result"]
 

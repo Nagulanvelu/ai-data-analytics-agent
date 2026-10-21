@@ -6,6 +6,7 @@ __pycache__/
 .env
 .env.*
 !.env.example
+.coverage
 .streamlit/secrets.toml
 .DS_Store
 Thumbs.db
