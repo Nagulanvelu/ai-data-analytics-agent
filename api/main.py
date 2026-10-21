@@ -4,7 +4,7 @@ from io import BytesIO
 import polars as pl
 from fastapi import FastAPI, File, HTTPException, Query, UploadFile
 
-from agent.graph import answer_question
+from agent.graph import answer_question_with_groq
 from fastapi.responses import PlainTextResponse
 from reports.report_generator import generate_report
 
@@ -57,7 +57,7 @@ async def analyze_csv(
             infer_schema_length=10000,
         )
 
-        response = answer_question(df, question)
+        response = answer_question_with_groq(df, question)
         result = response["result"]
 
         if isinstance(result, pl.DataFrame):
