@@ -161,20 +161,41 @@ groq_agent = workflow.compile()
 
 
 def answer_question_with_groq(df, question: str) -> dict:
-    """Run the LangGraph workflow with Groq-powered tool selection."""
-    state = groq_agent.invoke({
-        "df": df,
-        "question": question,
-        "selected_tool": "",
-        "result": None,
-        "explanation": "",
-    })
+    """Use Groq when available; fall back to rule-based analytics."""
+    try:
+        state = groq_agent.invoke({
+            "df": df,
+            "question": question,
+            "selected_tool": "",
+            "result": None,
+            "explanation": "",
+        })
 
-    return {
-        "tool": ALLOWED_TOOLS[state["selected_tool"]],
-        "result": state["result"],
-        "explanation": state.get(
-            "explanation",
-            "Selected an analytics tool based on your question.",
-        ),
-    }
+        return {
+            "tool": ALLOWED_TOOLS[state["selected_tool"]],
+            "result": state["result"],
+            "explanation": state.get(
+                "explanation",
+                "Selected a tool using Groq.",
+            ),
+            "mode": "groq",
+        }
+
+    except Exception as exc:
+        try:
+            fallback = answer_question(df, question)
+
+            return {
+                "tool": fallback["tool"],
+                "result": fallback["result"],
+                "explanation": (
+                    "Groq was unavailable; the rule-based fallback was used. "
+                    f"Reason: {type(exc).__name__}"
+                    
+                ),
+                "mode": "fallback",
+            }
+        except Exception as fallback_exc:
+            raise RuntimeError(
+                "Both Groq and rule-based analytics failed."
+            ) from fallback_exc
