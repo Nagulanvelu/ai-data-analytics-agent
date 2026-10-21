@@ -8,6 +8,8 @@ Upload a CSV dataset, explore its structure, identify data-quality issues, run S
 [![FastAPI](https://img.shields.io/badge/API-FastAPI-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
 [![Streamlit](https://img.shields.io/badge/UI-Streamlit-FF4B4B?logo=streamlit&logoColor=white)](https://streamlit.io/)
 [![Docker](https://img.shields.io/badge/Container-Docker-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
+[![AI Data Analytics Agent CI](https://github.com/Nagulanvelu/ai-data-analytics-agent/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Nagulanvelu/ai-data-analytics-agent/actions/workflows/ci.yml)
+
 
 ## ✨ Features
 
