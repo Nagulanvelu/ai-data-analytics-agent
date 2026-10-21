@@ -10,3 +10,6 @@ __pycache__/
 .streamlit/secrets.toml
 .DS_Store
 Thumbs.db
+mlflow.db
+mlruns/
+data_quality_report.txt

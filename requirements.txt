@@ -13,3 +13,6 @@ langgraph
 langchain-core
 langchain-groq
 python-dotenv
+mlflow
+pytest
+pytest-cov
