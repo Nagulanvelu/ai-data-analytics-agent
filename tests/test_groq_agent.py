@@ -25,7 +25,10 @@ def test_groq_success():
         "explanation": "Checking missing values.",
     }
 
-    with patch("agent.graph.groq_agent.invoke", return_value=mock_state):
+    with patch(
+        "agent.graph.groq_agent.invoke",
+        return_value=mock_state,
+    ):
         response = answer_question_with_groq(
             df,
             "Which columns have missing values?",

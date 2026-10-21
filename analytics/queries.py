@@ -21,7 +21,9 @@ def run_sql_query(df: pl.DataFrame, query: str) -> pl.DataFrame:
         if not normalized_query.lower().startswith("select "):
             raise ValueError("Only SELECT queries are allowed.")
 
-        result = connection.execute(normalized_query).pl()
+        result = pl.from_arrow(
+            connection.execute(normalized_query).to_arrow_table()
+)
         return result
 
     finally:
