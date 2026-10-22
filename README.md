@@ -38,6 +38,23 @@ It combines CSV profiling, data-quality checks, SQL analytics, interactive visua
 
 The goal is to make dataset exploration easier while providing reproducible records of data-quality analysis.
 
+## 🌐 Live Demo
+
+Try the deployed application: **[🚀 Launch DataWizard AI](https://datawizard-ai.streamlit.app/)**
+
+## 🖼️ Application Screenshots
+
+### Data Explorer
+![DataWizard AI — Data Explorer](docs/screenshots/data-explorer.png)
+
+### AI Analytics Assistant
+![DataWizard AI — AI Assistant missing-value analysis](docs/screenshots/ai-assistant.png)
+
+### SQL Lab
+![DataWizard AI — SQL Lab query results](docs/screenshots/sql-lab.png)
+
+---
+
 ## ✨ Features
 
 ### 📂 CSV Data Profiling
