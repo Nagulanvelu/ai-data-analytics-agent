@@ -44,14 +44,14 @@ Try the deployed application: **[🚀 Launch DataWizard AI](https://datawizard-a
 
 ## 🖼️ Application Screenshots
 
-### Data Explorer
-![DataWizard AI — Data Explorer](docs/screenshots/data-explorer.png)
+### 📊 Data Explorer
+![Data Explorer](docs/screenshots/data-explorer.png)
 
-### AI Analytics Assistant
-![DataWizard AI — AI Assistant missing-value analysis](docs/screenshots/ai-assistant.png)
+### 🤖 AI Analytics Assistant
+![AI Analytics Assistant](docs/screenshots/ai-assistant.png)
 
-### SQL Lab
-![DataWizard AI — SQL Lab query results](docs/screenshots/sql-lab.png)
+### 🗃️ SQL Lab
+![SQL Lab](docs/screenshots/sql-lab.png)
 
 ---
 
