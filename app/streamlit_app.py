@@ -1,5 +1,13 @@
 
+
 import io
+import sys
+from pathlib import Path
+
+# Ensure the repository root is importable when Streamlit runs this file.
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
 import plotly.express as px
 import polars as pl
@@ -12,6 +20,7 @@ from analytics.mlflow_tracker import track_dataset_analysis
 from analytics.mlflow_dashboard import get_experiment_runs
 from agent.graph import answer_question_with_groq
 from reports.report_generator import generate_report
+
 
 
 # ============================================================
