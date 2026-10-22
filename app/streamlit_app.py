@@ -1,8 +1,14 @@
 
 
 import io
+import sys
+from pathlib import Path
 
-import mlflow
+# Ensure the repository root is importable when Streamlit runs this file.
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
 import plotly.express as px
 import polars as pl
 import streamlit as st
@@ -16,6 +22,10 @@ from agent.graph import answer_question_with_groq
 from reports.report_generator import generate_report
 
 
+
+# ============================================================
+# PAGE CONFIGURATION
+# ============================================================
 
 st.set_page_config(
     page_title="AI Data Analytics Agent",
@@ -338,12 +348,159 @@ def get_numeric_columns():
         if dtype.is_numeric()
     ]
 
-        if numeric_columns:
-            st.subheader("📊 Interactive Chart")
-            selected_column = st.selectbox(
-                "Choose a numeric column",
-                numeric_columns,
+
+def get_quality_metrics():
+    rows, columns = df.shape
+    missing = sum(df[col].null_count() for col in df.columns)
+    duplicates = rows - df.unique().height
+    total_cells = rows * columns
+
+    missing_pct = (
+        missing / total_cells * 100 if total_cells else 0.0
+    )
+    duplicate_pct = (
+        duplicates / rows * 100 if rows else 0.0
+    )
+    quality = max(
+        0.0,
+        min(100.0, 100.0 - missing_pct - duplicate_pct * 10),
+    )
+
+    return {
+        "rows": rows,
+        "columns": columns,
+        "missing": missing,
+        "duplicates": duplicates,
+        "missing_pct": missing_pct,
+        "duplicate_pct": duplicate_pct,
+        "quality": quality,
+    }
+
+
+def show_page_header(title, description):
+    st.markdown(f"## {title}")
+    st.markdown(
+        f'<p class="section-caption">{description}</p>',
+        unsafe_allow_html=True,
+    )
+
+
+# ============================================================
+# OVERVIEW
+# ============================================================
+
+if page == "🏠 Overview":
+    if df is None:
+        st.markdown("## 👋 Welcome to your analytics workspace")
+        st.markdown(
+            '<p class="section-caption">'
+            'Upload a CSV file above to unlock data profiling, '
+            'interactive charts, SQL analytics, AI questions, and reports.'
+            '</p>',
+            unsafe_allow_html=True,
+        )
+
+        a, b, c = st.columns(3)
+        a.metric("Analytics Workspace", "Ready")
+        b.metric("Experiment Tracking", "MLflow")
+        c.metric("Data Engine", "Polars")
+
+        st.markdown("### Your workflow")
+        st.markdown(
+            "📂 **Upload**  →  🔎 **Explore**  →  🛡️ **Validate**  "
+            "→  📊 **Analyze**  →  📄 **Export**"
+        )
+
+    else:
+        metrics = get_quality_metrics()
+
+        show_page_header(
+            "📊 Dataset Overview",
+            f"Quick summary and insights for **{uploaded_file.name}**",
+        )
+
+        a, b, c, d, e = st.columns(5)
+        a.metric("Total Rows", f"{metrics['rows']:,}")
+        b.metric("Total Columns", f"{metrics['columns']:,}")
+        c.metric("Missing Values", f"{metrics['missing']:,}")
+        d.metric("Duplicate Rows", f"{metrics['duplicates']:,}")
+        e.metric("Quality Score", f"{metrics['quality']:.1f}/100")
+
+        st.divider()
+
+        left, right = st.columns([1.05, 1])
+
+        with left:
+            st.markdown("### 👁️ Data Preview")
+            st.caption("First five rows of your dataset")
+            st.dataframe(
+                df.head(5).to_pandas(),
+                use_container_width=True,
+                hide_index=True,
             )
+
+        with right:
+            st.markdown("### 📊 Missing Values by Column")
+
+            missing_df = pl.DataFrame({
+                "Column": list(summary["missing_values"].keys()),
+                "Missing Values": list(summary["missing_values"].values()),
+            }).filter(pl.col("Missing Values") > 0)
+
+            if missing_df.height:
+                fig = px.bar(
+                    missing_df.to_pandas(),
+                    x="Column",
+                    y="Missing Values",
+                    color="Missing Values",
+                    color_continuous_scale=[
+                        "#fecaca",
+                        "#fb7185",
+                        "#e11d48",
+                    ],
+                    template="plotly_white",
+                )
+                fig.update_layout(
+                    margin=dict(l=10, r=10, t=20, b=10),
+                    paper_bgcolor="rgba(0,0,0,0)",
+                )
+                st.plotly_chart(fig, use_container_width=True)
+            else:
+                st.success("No missing values found.")
+
+
+# ============================================================
+# DATA EXPLORER
+# ============================================================
+
+elif page == "🔎 Data Explorer":
+    show_page_header(
+        "🔎 Data Explorer",
+        "Explore rows, column types, descriptive statistics, and distributions.",
+    )
+    require_dataset()
+
+    st.markdown("### 📋 Data Preview")
+    st.dataframe(
+        df.to_pandas(),
+        use_container_width=True,
+        hide_index=True,
+    )
+
+    st.markdown("### 📈 Column Statistics")
+    st.dataframe(
+        df.describe().to_pandas(),
+        use_container_width=True,
+    )
+
+    numeric_columns = get_numeric_columns()
+
+    if numeric_columns:
+        st.markdown("### 📊 Interactive Distribution")
+        selected_column = st.selectbox(
+            "Choose a numeric column",
+            numeric_columns,
+        )
 
         chart_df = (
             df.select(selected_column)
@@ -351,16 +508,99 @@ def get_numeric_columns():
             .to_pandas()
         )
 
-            fig = px.histogram(
-                chart_df,
-                x=selected_column,
-                title=f"Distribution of {selected_column}",
-            )
-            st.plotly_chart(fig, use_container_width=True)
+        fig = px.histogram(
+            chart_df,
+            x=selected_column,
+            title=f"Distribution of {selected_column}",
+            color_discrete_sequence=["#6366f1"],
+            template="plotly_white",
+        )
+        fig.update_layout(
+            paper_bgcolor="#FFFFFF",
+            plot_bgcolor="#FFFFFF",
+            font=dict(
+                family="Arial, sans-serif",
+                size=14,
+                color="#172554",
+            ),
+            title_font=dict(size=20, color="#172554"),
+            xaxis=dict(
+                title_font=dict(color="#172554", size=14),
+                tickfont=dict(color="#334155", size=12),
+                showgrid=True,
+                gridcolor="#E2E8F0",
+                zerolinecolor="#94A3B8",
+            ),
+            yaxis=dict(
+                title_font=dict(color="#172554", size=14),
+                tickfont=dict(color="#334155", size=12),
+                showgrid=True,
+                gridcolor="#E2E8F0",
+                zerolinecolor="#94A3B8",
+            ),
+            margin=dict(l=55, r=25, t=65, b=60),
+        )
+        st.plotly_chart(fig, use_container_width=True)
+    else:
+        st.info("No numeric columns are available for histograms.")
 
-        st.divider()
-        st.subheader("🔎 Ask Your Data with SQL")
-        st.caption("Use the table name `data` to query your uploaded CSV.")
+
+# DATA QUALITY
+# ============================================================
+
+elif page == "🛡️ Data Quality":
+    show_page_header(
+        "🛡️ Data Quality Center",
+        "Inspect missing values, duplicates, and quality indicators.",
+    )
+    require_dataset()
+
+    metrics = get_quality_metrics()
+
+    a, b, c = st.columns(3)
+    a.metric("Missing Values", f"{metrics['missing']:,}")
+    b.metric("Duplicate Rows", f"{metrics['duplicates']:,}")
+    c.metric("Quality Score", f"{metrics['quality']:.1f}/100")
+
+    st.markdown("### 🔍 Missing Values by Column")
+    missing_df = pl.DataFrame({
+        "Column": list(summary["missing_values"].keys()),
+        "Missing Values": list(summary["missing_values"].values()),
+    })
+    st.dataframe(
+        missing_df.to_pandas(),
+        use_container_width=True,
+        hide_index=True,
+    )
+
+    st.markdown("### 📊 Data Quality Visualization")
+    missing_fig = create_missing_values_chart(df)
+
+    if missing_fig is not None:
+        st.plotly_chart(missing_fig, use_container_width=True)
+    else:
+        st.success("No missing values detected.")
+
+    st.download_button(
+        "⬇️ Download Missing Values Summary",
+        data=missing_df.write_csv(),
+        file_name="missing_values_summary.csv",
+        mime="text/csv",
+    )
+
+
+# ============================================================
+# SQL LAB
+# ============================================================
+
+elif page == "🗃️ SQL Lab":
+    show_page_header(
+        "🗃️ SQL Lab",
+        "Run SQL queries against your uploaded dataset using DuckDB.",
+    )
+    require_dataset()
+
+    st.caption("Use the table name `data` to query your uploaded CSV.")
 
     sql_query = st.text_area(
         "SQL Query",
@@ -473,30 +713,26 @@ elif page == "📈 MLflow Tracking":
         except Exception as exc:
             st.error(f"MLflow tracking failed: {exc}")
 
-        # Download analyzed CSV
-        st.download_button(
-            "📊 Download Analyzed CSV",
-            data=df.write_csv(),
-            file_name="analyzed_data.csv",
-            mime="text/csv",
-        )
+    st.info(
+        "This deployment uses local MLflow storage. On Streamlit Community Cloud, "
+        "run history may not persist after restarts. Configure a remote MLflow "
+        "tracking server if you need durable experiment history."
+    )
 
-        # Download data quality report
-        report_text = generate_report(df)
 
-        st.download_button(
-            "📄 Download Data Quality Report",
-            data=report_text,
-            file_name="data_quality_report.txt",
-            mime="text/plain",
-        )
-        
-        st.divider()
-        st.subheader("📈 MLflow Experiment Comparison")
+# ============================================================
+# MLFLOW EXPERIMENT COMPARISON
+# ============================================================
 
-        if st.button("Refresh Experiment Runs"):
-            try:
-                runs_df = get_experiment_runs()
+elif page == "🧪 Experiments":
+    show_page_header(
+        "🧪 Experiment Comparison",
+        "Review historical runs and compare data-quality scores.",
+    )
+
+    if st.button("🔄 Refresh Experiment Runs"):
+        try:
+            runs_df = get_experiment_runs()
 
             if runs_df.empty:
                 st.info("No MLflow experiment runs found yet.")
@@ -533,11 +769,52 @@ elif page == "📈 MLflow Tracking":
                             use_container_width=True,
                         )
 
-            except Exception as exc:
-                st.error(
-                    f"Could not load MLflow runs: {exc}"
-                )
+        except Exception as exc:
+            st.error(f"Could not load MLflow runs: {exc}")
 
+    st.caption(
+        "The localhost MLflow UI is not publicly accessible from a deployed app. "
+        "Use a remote MLflow tracking server for shareable experiment history."
+    )
+
+
+# ============================================================
+# REPORTS AND DOWNLOADS
+# ============================================================
+
+elif page == "📄 Reports":
+    show_page_header(
+        "📄 Reports Center",
+        "Preview and download your analyzed dataset and data-quality report.",
+    )
+    require_dataset()
+
+    st.markdown("### 📊 Download Analyzed CSV")
+    st.download_button(
+        "⬇️ Download Analyzed CSV",
+        data=df.write_csv(),
+        file_name="analyzed_data.csv",
+        mime="text/csv",
+    )
+
+    st.divider()
+    st.markdown("### 📄 Data Quality Report")
+
+    try:
+        report_text = generate_report(df)
+
+        st.text_area(
+            "Report Preview",
+            value=report_text,
+            height=300,
+        )
+
+        st.download_button(
+            "⬇️ Download Data Quality Report",
+            data=report_text,
+            file_name="data_quality_report.txt",
+            mime="text/plain",
+        )
 
     except Exception as exc:
         st.error(f"Could not generate report: {exc}")
