@@ -507,40 +507,35 @@ elif page == "🔎 Data Explorer":
             template="plotly_white",
         )
         fig.update_layout(
-    paper_bgcolor="#FFFFFF",
-    plot_bgcolor="#FFFFFF",
-    font=dict(
-        family="Arial, sans-serif",
-        size=14,
-        color="#172554",
-    ),
-    title_font=dict(
-        size=20,
-        color="#172554",
-    ),
-    xaxis=dict(
-        title_font=dict(color="#172554", size=14),
-        tickfont=dict(color="#334155", size=12),
-        showgrid=True,
-        gridcolor="#E2E8F0",
-        zerolinecolor="#94A3B8",
-    ),
-    yaxis=dict(
-        title_font=dict(color="#172554", size=14),
-        tickfont=dict(color="#334155", size=12),
-        showgrid=True,
-        gridcolor="#E2E8F0",
-        zerolinecolor="#94A3B8",
-    ),
-    margin=dict(l=55, r=25, t=65, b=60),
-)
-
-st.plotly_chart(fig, use_container_width=True)
+            paper_bgcolor="#FFFFFF",
+            plot_bgcolor="#FFFFFF",
+            font=dict(
+                family="Arial, sans-serif",
+                size=14,
+                color="#172554",
+            ),
+            title_font=dict(size=20, color="#172554"),
+            xaxis=dict(
+                title_font=dict(color="#172554", size=14),
+                tickfont=dict(color="#334155", size=12),
+                showgrid=True,
+                gridcolor="#E2E8F0",
+                zerolinecolor="#94A3B8",
+            ),
+            yaxis=dict(
+                title_font=dict(color="#172554", size=14),
+                tickfont=dict(color="#334155", size=12),
+                showgrid=True,
+                gridcolor="#E2E8F0",
+                zerolinecolor="#94A3B8",
+            ),
+            margin=dict(l=55, r=25, t=65, b=60),
+        )
+        st.plotly_chart(fig, use_container_width=True)
     else:
         st.info("No numeric columns are available for histograms.")
 
 
-# ============================================================
 # DATA QUALITY
 # ============================================================
 
@@ -709,8 +704,11 @@ elif page == "📈 MLflow Tracking":
         except Exception as exc:
             st.error(f"MLflow tracking failed: {exc}")
 
-    st.markdown("### 🔗 Local MLflow UI")
-    st.markdown("[Open MLflow at localhost:5000](http://127.0.0.1:5000)")
+    st.info(
+        "This deployment uses local MLflow storage. On Streamlit Community Cloud, "
+        "run history may not persist after restarts. Configure a remote MLflow "
+        "tracking server if you need durable experiment history."
+    )
 
 
 # ============================================================
@@ -765,7 +763,10 @@ elif page == "🧪 Experiments":
         except Exception as exc:
             st.error(f"Could not load MLflow runs: {exc}")
 
-    st.markdown("[Open the local MLflow UI](http://127.0.0.1:5000)")
+    st.caption(
+        "The localhost MLflow UI is not publicly accessible from a deployed app. "
+        "Use a remote MLflow tracking server for shareable experiment history."
+    )
 
 
 # ============================================================
